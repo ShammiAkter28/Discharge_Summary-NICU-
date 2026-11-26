@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NICU — Discharge Summary | Modern EMR Module</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="styles.css" />
+  <script defer src="data.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <!-- Skip to main content for keyboard/screen reader accessibility -->
+  <a class="skip-link" href="#main-workspace">Skip to clinical form</a>
+
+  <!-- Application Shell -->
+  <div class="app-shell">
+    <!-- Top Clinical Header & Action Toolbar -->
+    <header class="app-header no-print" role="banner">
+      <div class="header-top">
+        <div class="brand-cluster">
+          <div class="brand-badge" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 12h6" />
+              <path d="M12 9v6" />
+              <path d="M19 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Z" />
+            </svg>
+          </div>
+          <div>
+            <div class="brand-title-row">
+              <h1 class="app-title">( NICU ) — Discharge Summary</h1>
+              <span id="mode-badge" class="status-pill status-pill--display" title="Current Record Mode">
+                <span class="status-dot"></span>
+                <span id="mode-label">Display</span>
+              </span>
+              <span id="dirty-badge" class="status-pill status-pill--unsaved hidden" aria-live="polite">
+                Unsaved changes
+              </span>
+            </div>
+            <p class="app-subtitle">Neonatal Intensive Care Unit • Inpatient Clinical Documentation</p>
+          </div>
+        </div>
+
+        <div class="session-meta">
+          <div class="session-chip">
+            <span class="meta-label">Clinician</span>
+            <span class="meta-value">Shammi, Asstt. Professor</span>
+          </div>
+          <div class="session-chip">
+            <span class="meta-label">Dept / Branch</span>
+            <span class="meta-value">Medicine • Bangladesh</span>
+          </div>
+          <div class="session-chip session-chip--time">
+            <span id="live-date" class="meta-value font-mono">--/--/----</span>
+            <span id="live-time" class="meta-label font-mono">--:--</span>
+          </div>
+          <button type="button" id="btn-messages" class="icon-chip" title="System Notifications">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+            </svg>
+            <span>Msg (<span id="msg-count">0</span>)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Toolbar: Replaces legacy cryptic Oracle Forms icon strip -->
+      <div class="toolbar" role="toolbar" aria-label="Record Actions">
+        <div class="toolbar-group">
+          <button type="button" class="tool-btn" id="tb-new" title="New / Insert Record (Alt+N)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
+              <line x1="12" y1="18" x2="12" y2="12" />
+              <line x1="9" y1="15" x2="15" y2="15" />
+            </svg>
+            <span>New</span>
+          </button>
+          <button type="button" class="tool-btn tool-btn--primary" id="tb-save" title="Save Discharge Summary (Ctrl+S)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+              <polyline points="17 21 17 13 7 13 7 21" />
+              <polyline points="7 3 7 8 15 8" />
+            </svg>
+            <span>Save</span>
+          </button>
+          <button type="button" class="tool-btn" id="tb-find-patient" title="Search Admitted Patients (F9)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+            <span>Admitted List</span>
+          </button>
+        </div>
+
+        <div class="toolbar-divider" aria-hidden="true"></div>
+
+        <div class="toolbar-group" aria-label="Record Navigation">
+          <button type="button" class="tool-btn tool-btn--icon" id="nav-first" title="First Saved Record">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="11 17 6 12 11 7" />
+              <polyline points="18 17 13 12 18 7" />
+            </svg>
+          </button>
+          <button type="button" class="tool-btn tool-btn--icon" id="nav-prev" title="Previous Record">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </button>
+          <span id="record-counter" class="record-counter font-mono" title="Saved records index">1 / 3</span>
+          <button type="button" class="tool-btn tool-btn--icon" id="nav-next" title="Next Record">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </button>
+          <button type="button" class="tool-btn tool-btn--icon" id="nav-last" title="Last Saved Record">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="13 17 18 12 13 7" />
+              <polyline points="6 17 11 12 6 7" />
+            </svg>
+          </button>
+        </div>
+
+        <div class="toolbar-divider" aria-hidden="true"></div>
+
+        <div class="toolbar-group">
+          <button type="button" class="tool-btn" id="tb-preview" title="Preview Discharge Report (Ctrl+P)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+            <span>Preview</span>
+          </button>
+          <button type="button" class="tool-btn" id="tb-print" title="Print Report">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 6 2 18 2 18 9" />
+              <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+              <rect x="6" y="14" width="12" height="8" />
+            </svg>
+            <span>Report</span>
+          </button>
+          <button type="button" class="tool-btn tool-btn--icon" id="tb-help" title="Keyboard Shortcuts & Help (F1)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10" />
+              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+              <line x1="12" y1="17" x2="12.01" y2="17" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Sticky Patient Context Banner + Stepper -->
+    <div class="context-bar no-print">
+      <div class="context-bar-inner">
+        <!-- Stepper Navigation (Replaces legacy Step1 / Step2 tiny tabs) -->
+        <nav class="stepper" aria-label="Discharge Summary Steps">
+          <button
+            type="button"
+            class="step-tab is-active"
+            id="tab-step1"
+            data-step="1"
+            aria-current="step"
+          >
+            <span class="step-num">1</span>
+            <span class="step-text">
+              <strong>Step 1</strong>
+              <small>Admission &amp; Clinical Summary</small>
+            </span>
+          </button>
+          <span class="step-connector" aria-hidden="true"></span>
+          <button
+            type="button"
+            class="step-tab"
+            id="tab-step2"
+            data-step="2"
+          >
+            <span class="step-num">2</span>
+            <span class="step-text">
+              <strong>Step 2</strong>
+              <small>Medications, Advice &amp; Sign-off</small>
+            </span>
+          </button>
+        </nav>
+
+        <!-- Live Patient Identity Strip -->
+        <div class="patient-strip" id="patient-strip" aria-live="polite">
+          <div class="patient-strip-main">
+            <span class="patient-avatar" id="strip-avatar">B</span>
+            <div>
+              <div class="patient-strip-name" id="strip-name">No Patient Selected</div>
+              <div class="patient-strip-sub">
+                <span class="font-mono" id="strip-adm">Adm: —</span>
+                <span>•</span>
+                <span class="font-mono" id="strip-hn">HN: —</span>
+                <span>•</span>
+                <span id="strip-bed">Bed: —</span>
+              </div>
+            </div>
+          </div>
+          <div class="patient-strip-metrics">
+            <div class="metric-pill">
+              <span class="metric-label">Age</span>
+              <span class="metric-val" id="strip-age">—</span>
+            </div>
+            <div class="metric-pill">
+              <span class="metric-label">Wt. Change</span>
+              <span class="metric-val" id="strip-wt-delta">—</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Form Workspace -->
+    <main id="main-workspace" class="workspace no-print">
+      <form id="discharge-form" novalidate>
+        <!-- ==================== STEP 1 ==================== -->
+        <section id="panel-step1" class="step-panel" aria-labelledby="tab-step1">
+          <!-- Card 1: Admission & Patient Identification -->
+          <section class="card" aria-labelledby="card1-title">
+            <div class="card-header">
+              <div class="card-title-group">
+                <span class="card-icon card-icon--teal" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                  </svg>
+                </span>
+                <div>
+                  <h2 id="card1-title" class="card-title">Patient &amp; Admission Details</h2>
+                  <p class="card-subtitle">Select an admitted patient (F9) to auto-populate registration details</p>
+                </div>
+              </div>
+              <span class="required-hint"><span class="req-star">*</span> Required clinical fields</span>
+            </div>
+
+            <div class="form-grid form-grid--4">
+              <!-- Admission No with LOV trigger -->
+              <div class="field field--lov">
+                <label for="admissionNo" class="field-label">
+                  Admission No <span class="req-star" aria-hidden="true">*</span>
+                </label>
+                <div class="input-group">
+                  <input
+                    type="text"
+                    id="admissionNo"
+                    name="admissionNo"
+                    class="input font-mono input--required"
+                    placeholder="e.g. A260301175629"
+                    autocomplete="off"
+                    required
+                  />
+                  <button
+                    type="button"
+                    id="btn-lov-patient"
+                    class="lov-btn"
+                    title="Open List of Admitted Patients (F9)"
+                    aria-label="Search Admitted Patients"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="11" cy="11" r="8" />
+                      <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                    </svg>
+                    <span>LOV</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="admissionDate" class="field-label">Admission Date</label>
+                <input type="date" id="admissionDate" name="admissionDate" class="input" />
+              </div>
+
+              <div class="field">
+                <label for="bed" class="field-label">Bed</label>
+                <input type="text" id="bed" name="bed" class="input font-mono" placeholder="e.g. INC-1" />
+              </div>
+
+              <div class="field">
+                <label for="hn" class="field-label">HN (Hospital No)</label>
+                <input type="text" id="hn" name="hn" class="input font-mono" placeholder="e.g. R2603011702091" />
+              </div>
+
+              <!-- Row 2 -->
+              <div class="field field--span-2">
+                <label for="patientName" class="field-label">Patient Name</label>
+                <input type="text" id="patientName" name="patientName" class="input" placeholder="e.g. Baby of Salma" />
+              </div>
+
+              <div class="field">
+                <label for="age" class="field-label">Age</label>
+                <input type="text" id="age" name="age" class="input font-mono" placeholder="0 Y 7 M 28 D" />
+              </div>
+
+              <div class="field">
+                <label for="motherGender" class="field-label">Mother Gender</label>
+                <select id="motherGender" name="motherGender" class="input">
+                  <option value="">Select...</option>
+                  <option value="Female">Female</option>
+                  <option value="Male">Male</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+
+              <!-- Row 3 -->
+              <div class="field field--span-2">
+                <label for="nationalId" class="field-label">National ID</label>
+                <input type="text" id="nationalId" name="nationalId" class="input font-mono" placeholder="Parent / Guardian NID" />
+              </div>
+
+              <div class="field">
+                <label for="motherBloodGroup" class="field-label">Mother Blood Group</label>
+                <select id="motherBloodGroup" name="motherBloodGroup" class="input">
+                  <option value="">Select...</option>
+                  <option value="A+">A+</option>
+                  <option value="A-">A-</option>
+                  <option value="B+">B+</option>
+                  <option value="B-">B-</option>
+                  <option value="AB+">AB+</option>
+                  <option value="AB-">AB-</option>
+                  <option value="O+">O+</option>
+                  <option value="O-">O-</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="dischargeType" class="field-label">Discharge Type</label>
+                <select id="dischargeType" name="dischargeType" class="input">
+                  <option value="">Select type...</option>
+                  <option value="Normal Discharge">Normal Discharge</option>
+                  <option value="Discharged on Advice">Discharged on Advice</option>
+                  <option value="DORB (On Request)">DORB (On Request)</option>
+                  <option value="Referred / Transferred">Referred / Transferred</option>
+                  <option value="Absconded">Absconded</option>
+                  <option value="Expired">Expired</option>
+                </select>
+              </div>
+
+              <!-- Row 4 -->
+              <div class="field field--span-2">
+                <label for="address" class="field-label">Address</label>
+                <input type="text" id="address" name="address" class="input" placeholder="Patient residential address" />
+              </div>
+
+              <div class="field">
+                <label for="dischargeDate" class="field-label">Discharge Date</label>
+                <input type="date" id="dischargeDate" name="dischargeDate" class="input" />
+              </div>
+
+              <div class="field">
+                <label for="dischargeNote" class="field-label">Discharge Note</label>
+                <input type="text" id="dischargeNote" name="dischargeNote" class="input" placeholder="Brief status note" />
+              </div>
+            </div>
+          </section>
+
+          <!-- Card 2: Delivery & Attending Physicians -->
+          <section class="card" aria-labelledby="card2-title">
+            <div class="card-header">
+              <div class="card-title-group">
+                <span class="card-icon card-icon--indigo" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                    <line x1="16" y1="2" x2="16" y2="6" />
+                    <line x1="8" y1="2" x2="8" y2="6" />
+                    <line x1="3" y1="10" x2="21" y2="10" />
+                  </svg>
+                </span>
+                <div>
+                  <h2 id="card2-title" class="card-title">Delivery &amp; Attending Team</h2>
+                  <p class="card-subtitle">Birth timing and primary care physicians</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-grid form-grid--4">
+              <div class="field">
+                <label for="deliveryDate" class="field-label">Delivery Date</label>
+                <input type="date" id="deliveryDate" name="deliveryDate" class="input" />
+              </div>
+
+              <div class="field">
+                <label for="deliveryHour" class="field-label">Delivery Hour</label>
+                <input type="time" id="deliveryHour" name="deliveryHour" class="input" />
+              </div>
+
+              <div class="field field--span-2">
+                <label for="admittingDoctor" class="field-label">Admitting Doctor</label>
+                <input
+                  type="text"
+                  id="admittingDoctor"
+                  name="admittingDoctor"
+                  class="input"
+                  placeholder="Enter admitting physician name"
+                />
+              </div>
+
+              <div class="field field--span-4">
+                <label for="consultantBy" class="field-label">Consultant By</label>
+                <input
+                  type="text"
+                  id="consultantBy"
+                  name="consultantBy"
+                  class="input"
+                  placeholder="Enter supervising consultant name & designation"
+                  list="consultant-suggestions"
+                />
+                <datalist id="consultant-suggestions"></datalist>
+              </div>
+            </div>
+          </section>
+
+          <!-- Card 3: Anthropometry & Neonatal Profile -->
+          <section class="card" aria-labelledby="card3-title">
+            <div class="card-header">
+              <div class="card-title-group">
+                <span class="card-icon card-icon--emerald" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                  </svg>
+                </span>
+                <div>
+                  <h2 id="card3-title" class="card-title">Neonatal Anthropometry &amp; Child Profile</h2>
+                  <p class="card-subtitle">Occipitofrontal circumference (OFC), weights, gender, and blood group</p>
+                </div>
+              </div>
+              <div id="weight-gain-badge" class="delta-badge hidden" aria-live="polite"></div>
+            </div>
+
+            <div class="form-grid form-grid--3">
+              <div class="field">
+                <label for="ofcAdmission" class="field-label">OFC on Admission</label>
+                <div class="input-unit-wrap">
+                  <input
+                    type="number"
+                    step="0.1"
+                    min="10"
+                    max="60"
+                    id="ofcAdmission"
+                    name="ofcAdmission"
+                    class="input font-mono"
+                    placeholder="0.0"
+                  />
+                  <span class="unit-tag">cm</span>
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="birthWeight" class="field-label">Birth Wt.</label>
+                <div class="input-unit-wrap">
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0.3"
+                    max="10"
+                    id="birthWeight"
+                    name="birthWeight"
+                    class="input font-mono"
+                    placeholder="0.00"
+                  />
+                  <span class="unit-tag">Kg</span>
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="childGender" class="field-label">Child Gender</label>
+                <select id="childGender" name="childGender" class="input">
+                  <option value="">Select...</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Ambiguous / Other">Ambiguous / Other</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="ofcDischarge" class="field-label">OFC on D/C</label>
+                <div class="input-unit-wrap">
+                  <input
+                    type="number"
+                    step="0.1"
+                    min="10"
+                    max="60"
+                    id="ofcDischarge"
+                    name="ofcDischarge"
+                    class="input font-mono"
+                    placeholder="0.0"
+                  />
+                  <span class="unit-tag">cm</span>
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="dischargeWeight" class="field-label">Discharge Wt.</label>
+                <div class="input-unit-wrap">
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0.3"
+                    max="15"
+                    id="dischargeWeight"
+                    name="dischargeWeight"
+                    class="input font-mono"
+                    placeholder="0.00"
+                  />
+                  <span class="unit-tag">Kg</span>
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="childBloodGroup" class="field-label">Child Blood Group</label>
+                <select id="childBloodGroup" name="childBloodGroup" class="input">
+                  <option value="">Select...</option>
+                  <option value="A+">A+</option>
+                  <option value="A-">A-</option>
+                  <option value="B+">B+</option>
+                  <option value="B-">B-</option>
+                  <option value="AB+">AB+</option>
+                  <option value="AB-">AB-</option>
+                  <option value="O+">O+</option>
+                  <option value="O-">O-</option>
+                </select>
+              </div>
+            </div>
+          </section>
+
+          <!-- Card 4: Clinical Summary Notes -->
+          <section class="card" aria-labelledby="card4-title">
+            <div class="card-header">
+              <div class="card-title-group">
+                <span class="card-icon card-icon--amber" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                    <line x1="16" y1="13" x2="8" y2="13" />
+                    <line x1="16" y1="17" x2="8" y2="17" />
+                    <polyline points="10 9 9 9 8 9" />
+                  </svg>
+                </span>
+                <div>
+                  <h2 id="card4-title" class="card-title">Clinical Findings, Diagnosis &amp; Hospital Course</h2>
+                  <p class="card-subtitle">Comprehensive inpatient clinical summary printed on the discharge document</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-grid form-grid--2">
+              <div class="field">
+                <label for="chiefComplaint" class="field-label">Chief Complaint</label>
+                <textarea
+                  id="chiefComplaint"
+                  name="chiefComplaint"
+                  class="input textarea"
+                  rows="3"
+                  placeholder="Presenting symptoms and reason for NICU admission..."
+                ></textarea>
+              </div>
+
+              <div class="field">
+                <div class="label-row">
+                  <label for="caseSummary" class="field-label">
+                    Case Summary <span class="req-star" aria-hidden="true">*</span>
+                  </label>
+                  <span class="field-hint">Key narrative</span>
+                </div>
+                <textarea
+                  id="caseSummary"
+                  name="caseSummary"
+                  class="input textarea input--required"
+                  rows="3"
+                  placeholder="Clinical progression, respiratory/feeding milestones, and condition at discharge..."
+                  required
+                ></textarea>
+              </div>
+
+              <div class="field">
+                <label for="investigationDone" class="field-label">Investigation Done</label>
+                <textarea
+                  id="investigationDone"
+                  name="investigationDone"
+                  class="input textarea"
+                  rows="3"
+                  placeholder="CBC, CRP, S. Bilirubin, Blood Culture, CXR, Echocardiography, etc..."
+                ></textarea>
+              </div>
+
+              <div class="field">
+                <label for="diagnosis" class="field-label">Diagnosis</label>
+                <textarea
+                  id="diagnosis"
+                  name="diagnosis"
+                  class="input textarea"
+                  rows="3"
+                  placeholder="Primary and secondary neonatal diagnoses..."
+                ></textarea>
+              </div>
+
+              <div class="field field--span-2">
+                <label for="treatmentInHospital" class="field-label">Treatment In Hospital</label>
+                <textarea
+                  id="treatmentInHospital"
+                  name="treatmentInHospital"
+                  class="input textarea"
+                  rows="3"
+                  placeholder="NICU interventions: CPAP/Ventilation, IV fluids, antibiotics, phototherapy, feeding regimen..."
+                ></textarea>
+              </div>
+            </div>
+          </section>
+
+          <!-- Step 1 Footer Navigation (Replaces legacy >> button) -->
+          <div class="step-footer">
+            <div class="step-footer-info">
+              <span>Step 1 of 2 • Patient &amp; Clinical Summary</span>
+            </div>
+            <div class="step-footer-actions">
+              <button type="button" id="btn-step1-clear" class="btn btn--ghost">Clear Form</button>
+              <button type="button" id="btn-to-step2" class="btn btn--primary btn--lg">
+                <span>Next: Medications &amp; Advice</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="13 17 18 12 13 7" />
+                  <polyline points="6 17 11 12 6 7" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== STEP 2 ==================== -->
+        <section id="panel-step2" class="step-panel hidden" aria-labelledby="tab-step2">
+          <!-- Card 5: Medications on Discharge -->
+          <section class="card" aria-labelledby="card5-title">
+            <div class="card-header card-header--wrap">
+              <div class="card-title-group">
+                <span class="card-icon card-icon--teal" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z" />
+                    <path d="m8.5 8.5 7 7" />
+                  </svg>
+                </span>
+                <div>
+                  <h2 id="card5-title" class="card-title">Medication on Discharge</h2>
+                  <p class="card-subtitle">Select medicines from catalog (F9) and provide bilingual dosing instructions</p>
+                </div>
+              </div>
+
+              <div class="age-comments-wrap">
+                <label for="ageComments" class="field-label inline-label">
+                  <span class="req-star">*</span> Age Comments
+                </label>
+                <input
+                  type="text"
+                  id="ageComments"
+                  name="ageComments"
+                  class="input input--required age-comments-input"
+                  placeholder="e.g. Neonate (0-28 days) / Corrected GA 36 wks"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="table-toolbar">
+              <button type="button" id="btn-add-med-lov" class="btn btn--secondary btn--sm">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="11" cy="11" r="8" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+                <span>Pick from Medicine List</span>
+              </button>
+              <button type="button" id="btn-add-med-row" class="btn btn--ghost btn--sm">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+                <span>Add Blank Row</span>
+              </button>
+            </div>
+
+            <div class="table-scroll">
+              <table class="data-table" id="med-table">
+                <thead>
+                  <tr>
+                    <th class="col-sl">SL</th>
+                    <th class="col-medno">Medicine No</th>
+                    <th class="col-medname">Medicine Name</th>
+                    <th class="col-strength">Strength</th>
+                    <th class="col-qty">Qty.</th>
+                    <th class="col-dur">Duration</th>
+                    <th class="col-instr">Instructions In Bangla</th>
+                    <th class="col-instr">Instructions In English</th>
+                    <th class="col-actions" aria-label="Row Actions"></th>
+                  </tr>
+                </thead>
+                <tbody id="med-tbody">
+                  <!-- Populated dynamically by app.js -->
+                </tbody>
+              </table>
+            </div>
+          </fieldset>
+
+          </section>
+
+          <!-- Card 6: Advice (Bilingual Unicode Bengali + English) -->
+          <section class="card" aria-labelledby="card6-title">
+            <div class="card-header card-header--wrap">
+              <div class="card-title-group">
+                <span class="card-icon card-icon--indigo" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 11l3 3L22 4" />
+                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                  </svg>
+                </span>
+                <div>
+                  <h2 id="card6-title" class="card-title">Discharge Advice (পরামর্শ)</h2>
+                  <p class="card-subtitle">Unicode Bengali &amp; English clinical guidance — click Advice List to insert</p>
+                </div>
+              </div>
+
+              <div class="advice-header-actions">
+                <button type="button" id="btn-suggest-age-advice" class="btn btn--soft-teal btn--sm" title="Auto-suggest NICU advice based on patient's age">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                  </svg>
+                  <span>Auto-Suggest by Age</span>
+                </button>
+                <button type="button" id="btn-lov-advice" class="btn btn--secondary btn--sm">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8" />
+                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                  </svg>
+                  <span>Open Advice List</span>
+                </button>
+                <button type="button" id="btn-add-custom-advice" class="btn btn--ghost btn--sm">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
+                  <span>Add Custom Line</span>
+                </button>
+              </div>
+            </div>
+
+            <div id="advice-list-container" class="advice-stack">
+              <!-- Populated dynamically by app.js -->
+            </div>
+          </section>
+
+          <!-- Card 7: Sign-off & Authorization -->
+          <section class="card" aria-labelledby="card7-title">
+            <div class="card-header">
+              <div class="card-title-group">
+                <span class="card-icon card-icon--emerald" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                  </svg>
+                </span>
+                <div>
+                  <h2 id="card7-title" class="card-title">Authorization &amp; Clinician Sign-off</h2>
+                  <p class="card-subtitle">Prepared by Register/AR(CA)/MO and approved by Consultant</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="signoff-grid">
+              <div class="signoff-row">
+                <span class="signoff-label">Register/AR(CA)/MO</span>
+                <div class="signoff-inputs">
+                  <input
+                    type="text"
+                    id="registerId"
+                    name="registerId"
+                    class="input font-mono signoff-id"
+                    placeholder="Employee ID"
+                  />
+                  <input
+                    type="text"
+                    id="registerName"
+                    name="registerName"
+                    class="input signoff-name"
+                    placeholder="Doctor Name"
+                  />
+                </div>
+              </div>
+
+              <div class="signoff-row">
+                <span class="signoff-label">Consultant</span>
+                <div class="signoff-inputs">
+                  <input
+                    type="text"
+                    id="consultantId"
+                    name="consultantId"
+                    class="input font-mono signoff-id input--required"
+                    placeholder="ID"
+                  />
+                  <div class="input-group signoff-name">
+                    <input
+                      type="text"
+                      id="consultantName"
+                      name="consultantName"
+                      class="input"
+                      placeholder="Consultant Name"
+                      list="consultant-suggestions"
+                    />
+                    <button
+                      type="button"
+                      id="btn-pick-consultant"
+                      class="lov-btn"
+                      title="Pick Consultant"
+                    >
+                      Pick
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Step 2 Footer Action Bar (Replaces legacy <<, Clear, Preview, Report, Exit) -->
+          <div class="step-footer step-footer--actions">
+            <button type="button" id="btn-back-step1" class="btn btn--ghost">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="11 17 6 12 11 7" />
+                <polyline points="18 17 13 12 18 7" />
+              </svg>
+              <span>Back to Step 1</span>
+            </button>
+
+            <div class="action-cluster">
+              <button type="button" id="btn-clear" class="btn btn--ghost">Clear</button>
+              <button type="button" id="btn-preview" class="btn btn--secondary">Preview</button>
+              <button type="button" id="btn-report" class="btn btn--secondary">Report / Print</button>
+              <button type="submit" id="btn-save" class="btn btn--primary">Save Summary</button>
+              <button type="button" id="btn-exit" class="btn btn--danger-outline">Exit</button>
+            </div>
+          </div>
+        </section>
+      </form>
+    </main>
+  </div>
+
+  <!-- ==================== MODAL: LIST OF ADMITTED PATIENTS ==================== -->
+  <div id="modal-patient-lov" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="patient-lov-title">
+    <div class="modal-card modal-card--lg">
+      <div class="modal-header">
+        <div>
+          <h3 id="patient-lov-title" class="modal-title">List of Admitted Patients</h3>
+          <p class="modal-subtitle">Search by Patient Name, Admission No, HN, or Bed (supports % wildcard)</p>
+        </div>
+        <button type="button" class="modal-close" data-close-modal="modal-patient-lov" aria-label="Close">×</button>
+      </div>
+
+      <div class="modal-search-bar">
+        <div class="input-group">
+          <input
+            type="text"
+            id="patient-lov-search"
+            class="input"
+            placeholder="Find (e.g. % or Salma or A26030...)"
+            autocomplete="off"
+          />
+          <button type="button" id="patient-lov-find-btn" class="btn btn--primary">Find</button>
+        </div>
+        <span id="patient-lov-count" class="lov-count">0 patients</span>
+      </div>
+
+      <div class="modal-table-wrap">
+        <table class="lov-table">
+          <thead>
+            <tr>
+              <th>Patient Name (Pname)</th>
+              <th>Admission No</th>
+              <th>Bed</th>
+              <th>HN</th>
+              <th>Adm. Date</th>
+            </tr>
+          </thead>
+          <tbody id="patient-lov-tbody"></tbody>
+        </table>
+      </div>
+
+      <div class="modal-footer">
+        <span class="keyboard-hint">Use ↑ / ↓ arrows and Enter to select</span>
+        <div class="modal-actions">
+          <button type="button" class="btn btn--ghost" data-close-modal="modal-patient-lov">Cancel</button>
+          <button type="button" id="patient-lov-ok" class="btn btn--primary">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: MEDICINE LIST ==================== -->
+  <div id="modal-medicine-lov" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="med-lov-title">
+    <div class="modal-card modal-card--lg">
+      <div class="modal-header">
+        <div>
+          <h3 id="med-lov-title" class="modal-title">Medicine List</h3>
+          <p class="modal-subtitle">Select medication to populate discharge prescription row</p>
+        </div>
+        <button type="button" class="modal-close" data-close-modal="modal-medicine-lov" aria-label="Close">×</button>
+      </div>
+
+      <div class="modal-search-bar">
+        <div class="input-group">
+          <input
+            type="text"
+            id="med-lov-search"
+            class="input"
+            placeholder="Find medicine by name or Medicine No (e.g. SIZONIL, I1505...)"
+            autocomplete="off"
+          />
+          <button type="button" id="med-lov-find-btn" class="btn btn--primary">Find</button>
+        </div>
+        <span id="med-lov-count" class="lov-count">0 items</span>
+      </div>
+
+      <div class="modal-table-wrap">
+        <table class="lov-table">
+          <thead>
+            <tr>
+              <th>Medicine Name</th>
+              <th>Medicine No</th>
+              <th>Default Strength</th>
+              <th>Form</th>
+            </tr>
+          </thead>
+          <tbody id="med-lov-tbody"></tbody>
+        </table>
+      </div>
+
+      <div class="modal-footer">
+        <span class="keyboard-hint">Double-click a row or press Enter to insert</span>
+        <div class="modal-actions">
+          <button type="button" class="btn btn--ghost" data-close-modal="modal-medicine-lov">Cancel</button>
+          <button type="button" id="med-lov-ok" class="btn btn--primary">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: ADVICE LIST ==================== -->
+  <div id="modal-advice-lov" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="advice-lov-title">
+    <div class="modal-card modal-card--xl">
+      <div class="modal-header">
+        <div>
+          <h3 id="advice-lov-title" class="modal-title">Advice List (পরামর্শ তালিকা)</h3>
+          <p class="modal-subtitle">Check multiple advice items or click one and press OK</p>
+        </div>
+        <button type="button" class="modal-close" data-close-modal="modal-advice-lov" aria-label="Close">×</button>
+      </div>
+
+      <div class="modal-search-bar">
+        <div class="input-group">
+          <input
+            type="text"
+            id="advice-lov-search"
+            class="input"
+            placeholder="Find advice in English or বাংলা..."
+            autocomplete="off"
+          />
+          <button type="button" id="advice-lov-find-btn" class="btn btn--primary">Find</button>
+        </div>
+        <span id="advice-lov-count" class="lov-count">0 items</span>
+      </div>
+
+      <div class="modal-table-wrap">
+        <table class="lov-table">
+          <thead>
+            <tr>
+              <th class="col-check">
+                <input type="checkbox" id="advice-select-all" aria-label="Select all advices" />
+              </th>
+              <th>Advice (English)</th>
+              <th>Advice (বাংলা)</th>
+              <th>Age Criteria</th>
+            </tr>
+          </thead>
+          <tbody id="advice-lov-tbody"></tbody>
+        </table>
+      </div>
+
+      <div class="modal-footer">
+        <span class="keyboard-hint">Unicode Bengali rendered cleanly (no Bijoy font issues)</span>
+        <div class="modal-actions">
+          <button type="button" class="btn btn--ghost" data-close-modal="modal-advice-lov">Cancel</button>
+          <button type="button" id="advice-lov-ok" class="btn btn--primary">Add Selected (OK)</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: CLINICAL REPORT PREVIEW & PRINT SHEET ==================== -->
+  <div id="modal-preview" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="preview-title">
+    <div class="modal-card modal-card--xl modal-card--preview">
+      <div class="modal-header no-print">
+        <div>
+          <h3 id="preview-title" class="modal-title">Discharge Summary — Report Preview</h3>
+          <p class="modal-subtitle">Formatted A4 clinical document ready for printing or PDF export</p>
+        </div>
+        <div class="modal-actions">
+          <button type="button" id="btn-preview-print" class="btn btn--primary">Print / Save PDF</button>
+          <button type="button" class="modal-close" data-close-modal="modal-preview" aria-label="Close">×</button>
+        </div>
+      </div>
+
+      <div class="preview-scroll">
+        <article id="print-sheet" class="print-sheet">
+          <!-- Populated dynamically by app.js -->
+        </article>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: HELP / SHORTCUTS ==================== -->
+  <div id="modal-help" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="help-title">
+    <div class="modal-card modal-card--sm">
+      <div class="modal-header">
+        <h3 id="help-title" class="modal-title">Clinical Keyboard Shortcuts</h3>
+        <button type="button" class="modal-close" data-close-modal="modal-help" aria-label="Close">×</button>
+      </div>
+      <div class="help-body">
+        <ul class="shortcut-list">
+          <li><kbd>F9</kbd><span>Open List of Values (Patient / Medicine / Advice)</span></li>
+          <li><kbd>Alt</kbd> + <kbd>1</kbd> / <kbd>2</kbd><span>Switch between Step 1 and Step 2</span></li>
+          <li><kbd>Ctrl</kbd> + <kbd>S</kbd><span>Save Discharge Summary</span></li>
+          <li><kbd>Ctrl</kbd> + <kbd>P</kbd><span>Open Print Preview / Report</span></li>
+          <li><kbd>↑</kbd> / <kbd>↓</kbd> &amp; <kbd>Enter</kbd><span>Navigate and confirm inside lookup modals</span></li>
+          <li><kbd>Esc</kbd><span>Close active modal dialog</span></li>
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <span></span>
+        <button type="button" class="btn btn--primary" data-close-modal="modal-help">Got it</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container no-print" aria-live="polite" aria-atomic="true"></div>
+</body>
+</html>
